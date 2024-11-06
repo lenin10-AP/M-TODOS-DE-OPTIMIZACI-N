@@ -36,22 +36,27 @@ if st.button("Resolver Ejercicio 8.1"):
     st.write(f"x1 = {x_relaxed[0]:.2f}, x2 = {x_relaxed[1]:.2f}, x3 = {x_relaxed[2]:.2f}")
     st.write(f"Valor de la función objetivo: P = {P_relaxed:.2f}")
 
-    # Subproblemas de Branch and Bound
-    A_sub1 = A_8_1 + [[1, 0, 0]]
-    b_sub1 = b_8_1 + [1]
-    result_sub1 = linprog(c_8_1, A_ub=A_sub1, b_ub=b_sub1, bounds=(0, None), method="highs")
+# --- Ejercicio 8.2 ---
+st.header("Ejercicio 8.2: Resolución como un Problema de Programación Entera")
+st.write("Maximizar P(x1, x2, x3) = 4x1 + 3x2 + 3x3 sujeto a las restricciones:")
+st.latex(r"""
+\begin{align*}
+4x_1 + 2x_2 + x_3 &\leq 10 \\
+3x_1 + 4x_2 + 2x_3 &\leq 14 \\
+2x_1 + x_2 + 3x_3 &\leq 7 \\
+x_1, x_2, x_3 &\geq 0, \text{ enteros}
+\end{align*}
+""")
 
-    A_sub2 = A_8_1 + [[-1, 0, 0]]
-    b_sub2 = b_8_1 + [-2]
-    result_sub2 = linprog(c_8_1, A_ub=A_sub2, b_ub=b_sub2, bounds=(0, None), method="highs")
+if st.button("Resolver Ejercicio 8.2"):
+    # Resolver el problema de programación entera
+    result_8_2 = linprog(c_8_1, A_ub=A_8_1, b_ub=b_8_1, bounds=(0, None), method="highs", integrality=[True]*3)
+    x_int = result_8_2.x
+    P_int = -result_8_2.fun
 
-    st.write("*Solución del Subproblema 1 (x1 <= 1):*")
-    st.write(f"x1 = {result_sub1.x[0]:.2f}, x2 = {result_sub1.x[1]:.2f}, x3 = {result_sub1.x[2]:.2f}")
-    st.write(f"Valor de la función objetivo: P = {-result_sub1.fun:.2f}")
-
-    st.write("*Solución del Subproblema 2 (x1 >= 2):*")
-    st.write(f"x1 = {result_sub2.x[0]:.2f}, x2 = {result_sub2.x[1]:.2f}, x3 = {result_sub2.x[2]:.2f}")
-    st.write(f"Valor de la función objetivo: P = {-result_sub2.fun:.2f}")
+    st.write("*Solución del problema de programación entera:*")
+    st.write(f"x1 = {x_int[0]:.2f}, x2 = {x_int[1]:.2f}, x3 = {x_int[2]:.2f}")
+    st.write(f"Valor de la función objetivo: P = {P_int:.2f}")
 
 # --- Ejercicio 8.3 ---
 st.header("Ejercicio 8.3: Método de Cortes de Gomory")
@@ -137,4 +142,4 @@ if st.button("Resolver Ejercicio 8.5"):
     for i, selected in enumerate(selected_projects, start=1):
         st.write(f"Proyecto {i}: {'Seleccionado' if selected >= 0.5 else 'No seleccionado'}")
 
-    st.write(f"*Valor total de NPV:* {total_npv}")
+    st.write(f"**Valor total de NPV:**{total_npv:.2f}")
